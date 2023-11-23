@@ -1,0 +1,40 @@
+{% extends 'layout.html'%} 
+{% block title %} Home {% endblock %} 
+{% block body %}
+    <h1>Hola: <span id="mostrarNombre"></span></h1>
+    <dialog id="dialogo">
+        <h3>¿Cómo te llamas?</h3>
+        <form action="">
+            <input type="text" id="nombre" placeholder="Escribe tu usuario">
+            <button onclick="guardarNombre()">Ingresar</button>
+        </form>
+    </dialog>
+
+    <ul id="listaCanales">
+        {% for canal in canales %}
+            <li>{{ canal }}</li>
+        {% endfor %}
+    </ul>
+    
+    <form id="crearNuevoCanalForm">
+        <label for="nuevoCanal">Nuevo Canal:</label>
+        <input type="text" id="nuevoCanal" required>
+        <button type="button" onclick="createChannel()">Crear Canal</button>
+    </form>
+
+
+    <div>
+        <label for="room">Selecciona una sala:</label>
+        <select id="room" name="room">
+            <option value="sala1">Sala 1</option>
+            <option value="sala2">Sala 2</option>
+        </select>
+        <button onclick="joinRoom()">SALA</button>
+    </div>
+    <p id = "chat"></p>
+    <div>
+        <input type="text" id="message" placeholder="Escribe tu mensaje">
+        <button onclick="sendMessage()">MENSAJE</button>
+    </div>
+
+{% endblock %}
