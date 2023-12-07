@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Flack IO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.1/css/bulma.min.css">
+  <link rel="stylesheet" type="text/css" href="../static/styles/style.css">
+  <link rel="shortcut icon" href="../static/images/charlar.png" type="image/x-icon">
+  <link rel="stylesheet" href="https://unpkg.com/emoji-mart/css/emoji-mart.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.css"
+    integrity="sha512-vEia6TQGr3FqC6h55/NdU3QSM5XR6HSl5fW71QTKrgeER98LIMGwymBVM867C1XHIkYD9nMTfWK2A0xcodKHNA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://unpkg.com/emoji-mart/dist/emoji-mart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.0/socket.io.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+  <nav class="bg-gray-700 border-gray-200">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+      <a href="" class="flex items-center">
+        <span class="self-center text-2xl font-semibold whitespace-nowrap text-white">Bienvenido <span id="name_user">{{name_user}}</span></span>
+      </a>
+      <button data-collapse-toggle="navbar-default" type="button"
+        class="inline-flex items-center p-2 ml-3 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+        aria-controls="navbar-default" aria-expanded="false">
+        <span class="sr-only">Open main menu</span>
+        <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd"
+            d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+            clip-rule="evenodd"></path>
+        </svg>
+      </button>
+      <div class="hidden w-full md:block md:w-auto" id="navbar-default">
+        <ul
+          class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+          <li>
+            <a href="#" id="open-modal-button"
+              class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500"
+              aria-current="page">Add a new room</a>
+          </li>
+          <li>
+            <a href="/logout" id="open-modal-button"
+              class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500"
+              aria-current="page">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="columns is-mobile">
+    <div class="column is-paddingless is-3-desktop is-4-tablet is-2-mobile sidebar-user hero is-fullheight">
+      <div class="top-field is-hidden-mobile has-text-centered">
+      </div>
+
+      <ul id="roomList" class="scrollable">
+      </ul>
+
+    </div>
+      <div class="column is-9-desktop is-8-tablet is-10-mobile is-paddingless" id="change_room">
+        <nav class="navbar has-shadow user-nav">
+          <div class="navbar-start">
+            <div class="media">
+              <div class="media-left">
+              </div>
+              <div class="media-content">
+                <div class="content">
+                  <p>
+                    <strong id="name_room">General Room</strong>
+                    <br>
+                  </p>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="navbar-end">
+          <a class="navbar-item">
+            <span class="icon is-size-2">
+              <path fill-rule="evenodd"
+              d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 01-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 01.872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 012.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 012.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 01.872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 01-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 01-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 100-5.86 2.929 2.929 0 000 5.858z"
+              clip-rule="evenodd" />
+            </svg>
+          </span>
+        </a>
+        <a class="navbar-item">
+          <span class="icon is-size-2">
+            <path fill-rule="evenodd"
+            d="M8 16A8 8 0 108 0a8 8 0 000 16zm.93-9.412l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM8 5.5a1 1 0 100-2 1 1 0 000 2z"
+            clip-rule="evenodd" />
+          </svg>
+        </span>
+      </a>
+    </div>
+  </nav>
+  
+  <div class="columns">
+    <div class="column is-12 is-12-mobile is-flex hero is-fullheight message-window scrollable" >
+      <div class="flex-item-1" id="agregar-mensaje">
+        
+      </div>
+      <div class="flex-item-2">
+        <form class="form-fixed">
+          <div class="field has-addons">
+            <div class="control">
+              <input class="input emojiarea" type="text" id="message-input" placeholder="Escribe tu Mensaje"
+              onkeydown="handleKeyDown(event)">
+            </div>
+            <div class="control">
+                  <button type="button" class="button" id="send-message" value="Enviar">
+                    <svg height="36px" width="36px" viewBox="0 0 36 36">
+                      <g fill="none" fill-rule="evenodd">
+                        <g>
+                          <polygon points="0 36 36 36 36 0 0 0"></polygon>
+                          <path
+                          d="M31.1059281,19.4468693 L10.3449666,29.8224462 C8.94594087,30.5217547 7.49043432,29.0215929 8.17420251,27.6529892 C8.17420251,27.6529892 10.7473302,22.456697 11.4550902,21.0955966 C12.1628503,19.7344961 12.9730756,19.4988922 20.4970248,18.5264632 C20.7754304,18.4904474 21.0033531,18.2803547 21.0033531,17.9997309 C21.0033531,17.7196073 20.7754304,17.5095146 20.4970248,17.4734988 C12.9730756,16.5010698 12.1628503,16.2654659 11.4550902,14.9043654 C10.7473302,13.5437652 8.17420251,8.34697281 8.17420251,8.34697281 C7.49043432,6.9788693 8.94594087,5.47820732 10.3449666,6.1775158 L31.1059281,16.553593 C32.298024,17.1488555 32.298024,18.8511065 31.1059281,19.4468693"
+                          fill="#363636"></path>
+                        </g>
+                      </g>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="column is-hidden-mobile sidebar-profile" id="users">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="my-modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Crear nueva sala</p>
+        <button class="delete" aria-label="close" id="close-modal-button"></button>
+      </header>
+      <section class="modal-card-body">
+        <div class="field">
+          <label class="label">Nombre de la sala</label>
+          <div class="control">
+            <input class="input" id="roomNameInput" type="text" placeholder="Escribe el nombre de la sala aquí">
+          </div>
+        </div>
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-success" id="saveRoomBtn">Guardar</button>
+        <button class="button" id="cancel-modal-button">Cancelar</button>
+      </footer>
+    </div>
+  </div>
+
+<script>
+  const toggleButton = document.querySelector('[data-collapse-toggle="navbar-default"]');
+  const navbarMenu = document.getElementById('navbar-default');
+  
+  toggleButton.addEventListener('click', function() {
+    navbarMenu.classList.toggle('hidden');
+  });
+</script>
+
+  <script>
+    const openModalButton = document.querySelector('#open-modal-button');
+    const modal = document.querySelector('#my-modal');
+
+    openModalButton.onclick = () => {
+      modal.classList.toggle('is-active');
+    }
+
+    const closeModalButton = document.querySelector('#close-modal-button');
+    const cancelButton = document.querySelector('.modal-card-foot button.button:last-child');
+
+    closeModalButton.onclick = () => {
+      modal.classList.toggle('is-active');
+    }
+
+    cancelButton.onclick = () => {
+      modal.classList.toggle('is-active');
+    }
+  </script>
+
+  <script src="{{url_for('static', filename='socket.io.min.js')}}"></script>
+  <script src="{{url_for('static', filename='scripts/chat.js')}}"></script>
+  <script src="{{url_for('static', filename='scripts/nav.js')}}"></script>
+  <script src="{{url_for('static', filename='scripts/rooms.js')}}"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"
+    integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.js"
+    integrity="sha512-hkvXFLlESjeYENO4CNi69z3A1puvONQV5Uh+G4TUDayZxSLyic5Kba9hhuiNLbHqdnKNMk2PxXKm0v7KDnWkYA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+    $(`.emojiarea`).emojioneArea({
+      pickerPosition: 'top'
+
+    });
+  </script>
+
+</body>
+
+</html>
